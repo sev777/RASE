@@ -73,17 +73,16 @@ Running R-Patcher requires several arguments:
 --box_path *.pkl 
 --training True 
 --cl_type bert
- --train_way sen_prompt 
+ --train_way sen_prompt  # sen_prompt means +Pt;  ori menas R-Patcher 
  --log_path ./ZSRE_LOG/testing 
  --editor_tp patch 
  --seed 7 
- --if_rephrase True 
- --KL True 
- --re_vaild True
+ --if_rephrase True # if evaluate the GR
+ --re_vaild True  # if +Eq in the paper 
 
 ```
 model_path: the finetuned model to edited.
-box_path: the retrieval model. U can use the [contriever-msmarco](https://huggingface.co/facebook/contriever-msmarco) or The CL-based model can get at [Google_drive]()
+box_path: the retrieval model. U can use the [contriever-msmarco](https://huggingface.co/facebook/contriever-msmarco) or The CL-based model can get at [Google_drive](https://drive.google.com/file/d/1NEf33sqGuJf-cM2BR6XF-tZoZrj4AW8W/view?usp=sharing)
 
 
 
