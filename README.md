@@ -84,7 +84,27 @@ Running R-Patcher requires several arguments:
 model_path: the finetuned model to edited.
 box_path: the retrieval model. U can use the [contriever-msmarco](https://huggingface.co/facebook/contriever-msmarco) or The CL-based model can get at [Google_drive](https://drive.google.com/file/d/1NEf33sqGuJf-cM2BR6XF-tZoZrj4AW8W/view?usp=sharing)
 
+Evaluate  R-Patcher:
+```
+python eval.py
+--task  fever or zsre 
+--setting  *any_name_you_want
+--model_path  *.ckpt 
 
+--box_path *.pkl or contriever-msmarco
+
+--cl_type bert
+--train_way sen_prompt
+--log_path  *your_log_path
+--editor_tp
+patch
+
+--if_rephrase True # Follow train_stage setting
+--re_vaild True # Follow train_stage setting
+--weight_path  * # train_stage output
+
+
+```
 
 # Acknowledgement
 This repo benefits from [Transformer-Patcher](https://github.com/ZeroYuHuang/Transformer-Patcher), and [MEMIT](https://github.com/kmeng01/memit). Thanks for their wonderful works.
