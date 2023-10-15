@@ -8,7 +8,7 @@ import torch
 
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, AutoModel
 
 from .editor import BartSeq2SeqEditor, BertBinaryEditor
 from .settings import args, LOG, log_path
@@ -146,7 +146,6 @@ def final_test(edit_sets, seq_edit_data, editor, boxe_model, desc="", if_rephras
             re_after_edit = []
             if if_rephrase:  # and edit_res[2]:
                 # test rephrase edit
-
                 for ri, (i, a) in enumerate(zip(d0['re_src_input_ids'], d0['re_src_attention_mask'])):
                     # get the before res
                     if args.task == 'zsre':
@@ -447,8 +446,12 @@ if __name__ == "__main__":
         )
 
     # load the CL model for classify
-    boxe_model = torch.load(args.box_path)
-    boxe_model.tokenizer = AutoTokenizer.from_pretrained("/media/sev/win/huggingface/unsup-simcse-roberta-large")
+    # boxe_model = torch.load(args.box_path)
+    # boxe_model.tokenizer = AutoTokenizer.from_pretrained("/media/sev/win/huggingface/unsup-simcse-roberta-large")
+
+    #load the contriever
+    boxe_model = AutoModel.from_pretrained("contriever-msmarco").cuda()
+    boxe_model.tokenizer= AutoTokenizer.from_pretrained("contriever-msmarco")
 
     # split the edits dataset
     edit_sets = split_data_n_sets(seq_edit_data.edit_data, len(seq_edit_data.edit_data))

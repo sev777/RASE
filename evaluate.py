@@ -1,3 +1,8 @@
+'''
+REPLACE the original evaluate in MEMIT (https://github.com/kmeng01/memit)
+'''
+
+
 import copy
 import json
 import shutil
@@ -28,8 +33,6 @@ import tqdm
 ALG_DICT = {
     "MEMIT": (MEMITHyperParams, apply_memit_to_model),
     "ROME": (ROMEHyperParams, apply_rome_to_model),
-    "FT": (FTHyperParams, apply_ft_to_model),
-    "MEND": (MENDHyperParams, MendRewriteExecutor().apply_to_model),
 }
 
 DS_DICT = {
@@ -38,10 +41,6 @@ DS_DICT = {
     "zsre": (MENDQADataset, compute_rewrite_quality_zsre),
 }
 
-'''
-REPLACE the original evaluate in MEMIT (https://github.com/kmeng01/memit)
-
-'''
 
 
 def get_proj_for_bert(self,**kwargs):
@@ -72,7 +71,7 @@ def get_proj_for_bert(self,**kwargs):
 
             return self.sen_base_proj(src_emb), None
 import numpy as np
-def edit_cls(inds, xxx, editor):
+def edit_cls(inds, ):
 
     return (inds[0][0].cpu().item() - inds[0][1].cpu().item() > 0.15 and np.std(inds[0].cpu().tolist()) > 0.05) or inds[0][0].cpu().item()>0.9, \
         inds[1][0].detach().cpu().item()
@@ -134,14 +133,6 @@ batched: int = 0
     # Set algorithm-specific variables
     params_class, apply_algo = ALG_DICT[alg_name]
 
-    # Determine run directory
-    # Create new dir if not continuing from prev run OR prev run doesn't exist
-    # if (
-    #     continue_from_run is None
-    #     or not (run_dir = RESULTS_DIR / dir_name / continue_from_run).exists()
-    # ):
-    #     continue_from_run = None
-    # if continue_from_run is None:
     alg_dir = RESULTS_DIR / dir_name
     if alg_dir.exists():
         id_list = [
@@ -402,19 +393,13 @@ batched: int = 0
         pass
     else:
         if use_retri==1:
-
-            #load the CL model
-            # from experiments.mine.cl_model import cl_for_fact, laod_model
-            # md = laod_model()
-            # try:
-            #     md.load_state_dict(torch.load('/root/data/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
-            # except:
-            #     md.load_state_dict(torch.load('/root/sev777/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
-            # tokenizer = md.tokenizer
-
-            # load the contriever
-            # md = AutoModel.from_pretrained("contriever-msmarco").cuda()
-            # tokenizer= AutoTokenizer.from_pretrained("contriever-msmarco")
+            from experiments.mine.cl_model import cl_for_fact, laod_model
+            md = laod_model()
+            try:
+                md.load_state_dict(torch.load('/root/data/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
+            except:
+                md.load_state_dict(torch.load('/root/sev777/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
+            tokenizer = md.tokenizer
 
             mem_cache=[[],[],[]]#key,vale,ori
 
@@ -447,9 +432,7 @@ batched: int = 0
                 print(f'data {ri} need editing !!',flush=True)
 
                 start = time()
-                # rewrite_with=record["requested_rewrite"]
-                # rewrite_with['prompt']=record['facts_prompt']+' || '+  rewrite_with['prompt']
-                # record['paraphrase_prompts']=[record['facts_prompt']+' || '+ii  for ii in record['paraphrase_prompts']]
+
                 edited_model, weights_copy = apply_algo(
                     model if (use_retri==1 or edited_model==None) else edited_model,
                     tok,

@@ -175,13 +175,12 @@ if __name__ == "__main__":
         )
 
     # load the CL model for classify
-
-    boxe_model = torch.load(args.box_path)
-    boxe_model.tokenizer = AutoTokenizer.from_pretrained("/media/sev/win/huggingface/unsup-simcse-roberta-large")
+    # boxe_model = torch.load(args.box_path)
+    # boxe_model.tokenizer = AutoTokenizer.from_pretrained("unsup-simcse-roberta-large")
 
     #load the contriever
-    # boxe_model = AutoModel.from_pretrained("contriever-msmarco").cuda()
-    # boxe_model.tokenizer= AutoTokenizer.from_pretrained("contriever-msmarco")
+    boxe_model = AutoModel.from_pretrained("contriever-msmarco").cuda()
+    boxe_model.tokenizer= AutoTokenizer.from_pretrained("contriever-msmarco")
 
     # split the edits dataset
     edit_sets = split_data_n_sets(seq_edit_data.edit_data, len(seq_edit_data.edit_data))
@@ -203,8 +202,7 @@ if __name__ == "__main__":
         d0 = [j for j in dl][0]
 
         if args.task == 'zsre':
-            edit_res, re_res, hard_res = edit_or_not_seq2seq(editor.editor.original_model, data_point=d0,
-                                                             device=args.device,args=args)
+            edit_res, re_res, hard_res = edit_or_not_seq2seq(editor.editor.original_model, data_point=d0,                                                           device=args.device,args=args)
         else:
             edit_res, re_res, hard_res = edit_or_not_binary(editor.editor.original_model, data_point=d0,
                                                             device=args.device,args=args)
@@ -212,7 +210,6 @@ if __name__ == "__main__":
         aft_edit_res, aft_re_res, aft_hard_res = [], [], []
 
         if edit_res[2]:  # need edit
-
             if editsNUm == args.stop_number:
                 LOG.info(f"We are calculate the {editsNUm} edits,So we stop")
                 # try:
