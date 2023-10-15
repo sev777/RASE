@@ -393,13 +393,17 @@ batched: int = 0
         pass
     else:
         if use_retri==1:
-            from experiments.mine.cl_model import cl_for_fact, laod_model
-            md = laod_model()
-            try:
-                md.load_state_dict(torch.load('/root/data/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
-            except:
-                md.load_state_dict(torch.load('/root/sev777/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
-            tokenizer = md.tokenizer
+
+            md = AutoModel.from_pretrained("contriever-msmarco").cuda()
+            tokenizer= AutoTokenizer.from_pretrained("contriever-msmarco")
+
+            # from experiments.mine.cl_model import cl_for_fact, laod_model
+            # md = laod_model()
+            # try:
+            #     md.load_state_dict(torch.load('/root/data/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
+            # except:
+            #     md.load_state_dict(torch.load('/root/sev777/Transformer-Patcher-main/Retrieval_based_editing/CL_PARAM.ckpt'))
+            # tokenizer = md.tokenizer
 
             mem_cache=[[],[],[]]#key,vale,ori
 
