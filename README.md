@@ -111,13 +111,6 @@ This repo benefits from [Transformer-Patcher](https://github.com/ZeroYuHuang/Tra
 
 
 # Bibtex
-@inproceedings{
-anonymous2023improving,
-title={Improving Sequential Model Editing with Fact Retrieval},
-author={Anonymous},
-booktitle={The 2023 Conference on Empirical Methods in Natural Language Processing},
-year={2023},
-url={https://openreview.net/forum?id=JIrP8CIvx6}
-}
+
 
 #
