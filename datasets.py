@@ -414,12 +414,19 @@ class SeqEditDataSet(object):
 
 
 
-            self.edit_data = FeverEditData_Formine(tokenizer=tokenizer, data_path=edit_path,use_length=use_length)
+            # self.edit_data = FeverEditData_Formine(tokenizer=tokenizer, data_path=edit_path,use_length=use_length)
 
 
-            self.TrainR = FeverEditData_Formine(tokenizer=tokenizer, data_path=val_path,use_length=use_length)
+            # self.TrainR = FeverEditData_Formine(tokenizer=tokenizer, data_path=val_path,use_length=use_length)
 
-            self.TestR = FeverEditData_Formine(tokenizer=tokenizer, data_path=dev_path,use_length=use_length)
+            # self.TestR = FeverEditData_Formine(tokenizer=tokenizer, data_path=dev_path,use_length=use_length)
+
+            # replace the data file with yours    
+            self.edit_data = FeverEditData_Formine(tokenizer=tokenizer, data_path='/media/sev/Linux/pycharm_pro/Transformer-Patcher-main/data/fever_data/.fever-edit-evi.jsonl',use_length=use_length)
+    
+            self.TrainR = FeverEditData_Formine(tokenizer=tokenizer, data_path='/media/sev/Linux/pycharm_pro/Transformer-Patcher-main/data/fever_data/.fever-train-evi.jsonl',use_length=use_length)
+
+            self.TestR = FeverEditData_Formine(tokenizer=tokenizer, data_path='../data/fever_data/fever-dev-kilt-with-evi.jsonl',use_length=use_length)
 
 
         elif task_name == 'zsre':
