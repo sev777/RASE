@@ -22,7 +22,6 @@ import torch.nn as nn
 import collections
 from pytorch_lightning.loggers import TensorBoardLogger
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 def label_smoothed_nll_loss(lprobs, target, epsilon, ignore_index=None, reduce=True):
     if target.dim() == lprobs.dim() - 1:
         target = target.unsqueeze(-1)
@@ -63,8 +62,6 @@ def kl_loc_loss(pre, post, mask=None):
             return (kl * mask_).sum() / mask_.sum()
 
     raise NotImplementedError
-
-
 
 
 
@@ -125,26 +122,6 @@ class Editor(nn.Module):
             'model.layers.31.mlp.gate_proj': 'output',
             'model.layers.31.mlp.down_proj': 'input'
         }
-        #down 11008 * 4096
-        #up 4096* 11008
-        #gate 4096&11008
-        #x N*4096
-        # down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
-
-        # if self.args.task == 'zsre':
-        #
-        #     self.name_edit_type = {
-        #         'model.model.decoder.layers.5.fc1': 'output',
-        #         'model.model.decoder.layers.5.fc2': 'input'
-        #     }
-        # else:
-        #
-        #
-        #     self.name_edit_type = {
-        #         'model.model.encoder.layer.11.output.dense': 'input',
-        #         'model.model.encoder.layer.11.intermediate.dense': 'output'
-        #     }
-        #
 
     def reset_model(self, model, clear_memory):
         # self.model = copy.deepcopy(model)
@@ -277,20 +254,11 @@ class Editor(nn.Module):
             e['editor'].activate_loss = self.activate_loss
 
     def forward(self, input_ids=None, attention_mask=None, decoder_input_ids=None, decoder_attention_mask=None,fact_inds=None,labels=None):
-
-        # if self.args.task == 'zsre':
-        # target_for_loss = decoder_input_ids[:, 1:]
         res = dict()
 
         logits = self.model(
             input_ids, attention_mask,
         ).logits
-
-        # loss, nll_loss = label_smoothed_nll_loss(
-        #     lprobs=logits.log_softmax(-1), target=target_for_loss,
-        #     epsilon=self.model.hparams.eps, ignore_index=self.model.tokenizer.pad_token_id,
-        # )
-        # ntokens = decoder_attention_mask[:, 1:].sum()
 
 
         output = logits[:, :-1, :].reshape(-1, self.model.vocab_size)
@@ -302,9 +270,6 @@ class Editor(nn.Module):
         res['loss']=loss
 
         return res
-        # else:
-        #     res = self.model(input_ids, attention_mask, labels)
-        #     return res
 
     def get_detectors(self, *args, **kwargs):
         detected_modules = kwargs.get("detected_modules")
@@ -1078,11 +1043,6 @@ def get_res(model,tok,batch):
     label=batch['trg']
     re_res=evls(inpt,label,tok,model)
 
-    #loc
-    # inptt=batch['loc']
-    # label=batch['loc_ans']
-    # loc_res=evls(inpt,label,tok,model)
-
     #hop
     inpt = batch['hop']
     label = batch['hop_ans']
@@ -1132,12 +1092,4 @@ json.dump(metrics, open(f'{args.setting}_RASE_results.json', 'w'), indent=4)
 print()
 
 
-#  CUDA_VISIBLE_DEVICES=1 nohup python -u RASE_pipline.py --task LLama --data_path /root/siton-data-hanxiaoqiData/Ins_edit/data/zsre_mend_eval_portability_gpt4_ins.json --model_path /root/siton-data-9aa46a4f0e354f65bd8679947a35e67e/LMs/LMs/huggingface/open_llama_7b  --setting  ZSRE_RASE_llama7B &
-
 #  CUDA_VISIBLE_DEVICES=0 nohup python -u RASE_pipline.py --task LLama --data_path /root/siton-data-hanxiaoqiData/Ins_edit/data/counterfact_portability_gpt4_ins.json --model_path /root/siton-data-9aa46a4f0e354f65bd8679947a35e67e/LMs/LMs/huggingface/open_llama_7b --setting  CT_RASE_llama7B &
-#
-#
-# {'rel': 1.0, 're_res': 1.0, 'hop_res': 0.0}
-# hop_res: 0.006789524733268671
-# re_res: 0.9340446168768186
-# rel: 0.9340446168768186
